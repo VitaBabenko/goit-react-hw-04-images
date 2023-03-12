@@ -1,34 +1,26 @@
-import { Component } from 'react';
+import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { DivOverlay, DivModal } from './Modal.styled';
 
-export class Modal extends Component {
-  componentDidMount() {
-    window.addEventListener('keydown', this.props.handleKeyDown);
-  }
+export const Modal = ({ largeImage, name, onClose, handleKeyDown }) => {
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+  });
 
-  componentWillUnmount() {
-    window.removeEventListener('keydown', this.props.handleKeyDown);
-  }
-
-  handleBackdropClick = evt => {
+  const handleBackdropClick = evt => {
     if (evt.currentTarget === evt.target) {
-      this.props.onClose();
+      onClose();
     }
   };
 
-  render() {
-    const { largeImage, name } = this.props;
-
-    return (
-      <DivOverlay onClick={this.handleBackdropClick}>
-        <DivModal>
-          <img src={largeImage} alt={name} width="950" />
-        </DivModal>
-      </DivOverlay>
-    );
-  }
-}
+  return (
+    <DivOverlay onClick={handleBackdropClick}>
+      <DivModal>
+        <img src={largeImage} alt={name} width="950" />
+      </DivModal>
+    </DivOverlay>
+  );
+};
 
 Modal.propTypes = {
   largeImage: PropTypes.string.isRequired,
