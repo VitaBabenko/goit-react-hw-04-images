@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Searchbar } from './searchbar/Searchbar';
 import { ImageGallery } from './imageGallery/ImageGallery';
-import { getImage } from '../services/GetImage';
+import { APIgetImage } from '../services/GetImage';
 import { Loader } from './loader/Loader';
 import { Button } from './button/Button';
 
@@ -16,26 +16,25 @@ export const App = () => {
   useEffect(() => {
     setLoading(true);
 
-    getImage(imageName.trim(), page)
-      .then(resp => {
-        if (resp.ok) {
-          return resp.json();
-        }
-        return Promise.reject(
-          new Error(
-            'Sorry, there are no images matching your search query. Please try again.'
-          )
-        );
-      })
-      .then(images => {
-        console.log(images.hits);
-        page === 1
-          ? setImages(images.hits)
-          : setImages(prevImages => [...prevImages, ...images.hits]);
-        setTotalHits(images.totalHits);
+    APIgetImage(imageName.trim(), page)
+      .then(respImages => {
+        console.log(respImages);
       })
       .catch(error => setError(error))
       .finally(() => setLoading(false));
+
+    // getImage(imageName, page)
+    // .then(respImages => {
+    //   console.log(respImages.data.hits);
+    //   return (
+    //     page === 1
+    //       ? setImages(respImages.data.hits)
+    //       : setImages(prevImages => [...prevImages, ...respImages.data.hits]),
+    //     setTotalHits(respImages.data.totalHits)
+    //   );
+    // })
+    // .catch(error => setError(error))
+    // .finally(() => setLoading(false));
   }, [imageName, page]);
 
   // componentDidUpdate(_, prevState) {
