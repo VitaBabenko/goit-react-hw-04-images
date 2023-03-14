@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Searchbar } from './searchbar/Searchbar';
 import { ImageGallery } from './imageGallery/ImageGallery';
-import { APIgetImage } from '../services/GetImage';
+import { getImage } from '../services/GetImage';
 import { Loader } from './loader/Loader';
 import { Button } from './button/Button';
 
@@ -16,25 +16,18 @@ export const App = () => {
   useEffect(() => {
     setLoading(true);
 
-    APIgetImage(imageName.trim(), page)
+    getImage(imageName.trim(), page)
       .then(respImages => {
         console.log(respImages);
+        return (
+          page === 1
+            ? setImages(respImages.data.hits)
+            : setImages(prevImages => [...prevImages, ...respImages.data.hits]),
+          setTotalHits(respImages.data.totalHits)
+        );
       })
       .catch(error => setError(error))
       .finally(() => setLoading(false));
-
-    // getImage(imageName, page)
-    // .then(respImages => {
-    //   console.log(respImages.data.hits);
-    //   return (
-    //     page === 1
-    //       ? setImages(respImages.data.hits)
-    //       : setImages(prevImages => [...prevImages, ...respImages.data.hits]),
-    //     setTotalHits(respImages.data.totalHits)
-    //   );
-    // })
-    // .catch(error => setError(error))
-    // .finally(() => setLoading(false));
   }, [imageName, page]);
 
   // componentDidUpdate(_, prevState) {
@@ -78,7 +71,7 @@ export const App = () => {
   };
 
   const handleButton = () => {
-    setPage(prev => prev.page + 1);
+    setPage(prevPage => prevPage + 1);
   };
 
   return (
