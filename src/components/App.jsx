@@ -14,6 +14,9 @@ export const App = () => {
   const [totalHits, setTotalHits] = useState(null);
 
   useEffect(() => {
+    if (!imageName) {
+      return;
+    }
     setLoading(true);
 
     getImage(imageName.trim(), page)
@@ -29,39 +32,6 @@ export const App = () => {
       .catch(error => setError(error))
       .finally(() => setLoading(false));
   }, [imageName, page]);
-
-  // componentDidUpdate(_, prevState) {
-  //   const { imageName, page } = this.state;
-
-  //   if (prevState.imageName !== imageName || prevState.page !== page) {
-  //     this.setState({
-  //       loading: true,
-  //     });
-
-  //     getImage(imageName.trim(), page)
-  //       .then(resp => {
-  //         if (resp.ok) {
-  //           return resp.json();
-  //         }
-
-  //         return Promise.reject(
-  //           new Error(
-  //             'Sorry, there are no images matching your search query. Please try again.'
-  //           )
-  //         );
-  //       })
-  //       .then(images => {
-  //         console.log(images.hits);
-  //         return this.setState(() => ({
-  //           images:
-  //             page === 1 ? images.hits : [...this.state.images, ...images.hits],
-  //           totalHits: images.totalHits,
-  //         }));
-  //       })
-  //       .catch(error => this.setState({ error }))
-  //       .finally(() => this.setState({ loading: false }));
-  //   }
-  // }
 
   const handleFormSubmit = imageName => {
     setImageName(imageName);
@@ -90,75 +60,3 @@ export const App = () => {
     </>
   );
 };
-
-// export class App extends Component {
-//   state = {
-//     imageName: '',
-//     page: 1,
-//     images: [],
-//     loading: false,
-//     error: null,
-//     totalHits: null,
-//   };
-
-//   componentDidUpdate(_, prevState) {
-//     const { imageName, page } = this.state;
-
-//     if (prevState.imageName !== imageName || prevState.page !== page) {
-//       this.setState({
-//         loading: true,
-//       });
-
-//       getImage(imageName.trim(), page)
-//         .then(resp => {
-//           if (resp.ok) {
-//             return resp.json();
-//           }
-
-//           return Promise.reject(
-//             new Error(
-//               'Sorry, there are no images matching your search query. Please try again.'
-//             )
-//           );
-//         })
-//         .then(images => {
-//           console.log(images.hits);
-//           return this.setState(() => ({
-//             images:
-//               page === 1 ? images.hits : [...this.state.images, ...images.hits],
-//             totalHits: images.totalHits,
-//           }));
-//         })
-//         .catch(error => this.setState({ error }))
-//         .finally(() => this.setState({ loading: false }));
-//     }
-//   }
-
-//   handleFormSubmit = imageName => {
-//     this.setState({ imageName, page: 1, images: [], totalHits: null });
-//   };
-
-//   handleButton = () => {
-//     this.setState(prev => ({ page: prev.page + 1 }));
-//   };
-
-//   render() {
-//     const { error, images, loading, totalHits } = this.state;
-
-//     return (
-//       <>
-//         <Searchbar onSubmit={this.handleFormSubmit} />
-//         <ImageGallery images={images} />
-//         {loading && <Loader />}
-//         {error && <h1>{error.message}</h1>}
-//         {images.length < totalHits && <Button onClick={this.handleButton} />}
-//         {totalHits === 0 && (
-//           <h1>
-//             Sorry, there are no images matching your search query. Please try
-//             again.
-//           </h1>
-//         )}
-//       </>
-//     );
-//   }
-// }
